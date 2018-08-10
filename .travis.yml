@@ -13,6 +13,10 @@ language: cpp
 #     the rest is only tested with ASAN=On.
 # - gcc 4.9, 5.0
 #
+env:
+    - TSAN=On
+    - TSAN=Off
+
 matrix:
   include:
 
@@ -46,20 +50,20 @@ matrix:
       os: linux
       addons: *gcc49
 
-    # Test gcc-7: C++11, Build=Debug/Release, ASAN=Off
-    - env: GCC_VERSION=7 BUILD_TYPE=Debug CPP=11 ASAN=On LIBCXX=Off
+    # Test gcc-8: C++11, Build=Debug/Release, ASAN=Off
+    - env: GCC_VERSION=8 BUILD_TYPE=Debug CPP=11 ASAN=Off TSAN=On LIBCXX=Off
       os: linux
-      addons: &gcc70
+      addons: &gcc80
         apt:
           packages:
-            - g++-7
+            - g++-8
             - valgrind
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: GCC_VERSION=7 BUILD_TYPE=Release CPP=11 ASAN=On LIBCXX=Off
+    - env: GCC_VERSION=8 BUILD_TYPE=Release CPP=11 ASAN=Off TSAN=On LIBCXX=Off
       os: linux
-      addons: *gcc70
+      addons: *gcc80
 
 # Install dependencies
 before_install:
@@ -85,6 +89,7 @@ install:
   - export CXX_LINKER_FLAGS=""
   - if [ -z "$BUILD_TYPE" ]; then export BUILD_TYPE=Release; fi
   - if [ "$ASAN" == "On"]; then export CXX_FLAGS="${CXX_FLAGS} -fsanitize=address,undefined,integer -fno-omit-frame-pointer -fno-sanitize=unsigned-integer-overflow"; fi
+  - if [ "$TSAN" == "On"]; then export CXX_FLAGS="${CXX_FLAGS} -fsanitize=thread -fno-omit-frame-pointer"; fi
   - if [ -n "$CLANG_VERSION" ]; then CXX_FLAGS="${CXX_FLAGS} -D__extern_always_inline=inline"; fi
   - if [ "$LIBCXX" == "On" ]; then CXX_FLAGS="${CXX_FLAGS} -stdlib=libc++ -I/usr/include/c++/v1/"; fi
   - if [ "$LIBCXX" == "On" ]; then CXX_LINKER_FLAGS="${CXX_FLAGS} -L/usr/lib/ -lc++"; fi
