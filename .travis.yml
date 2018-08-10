@@ -15,7 +15,7 @@ language: cpp
 #
 matrix:
   include:
-   
+
 # Test gcc-4.8: C++11, Build=Debug/Release, ASAN=Off
     - env: GCC_VERSION=4.8 BUILD_TYPE=Debug CPP=11 ASAN=Off LIBCXX=Off
       os: linux
@@ -30,7 +30,7 @@ matrix:
     - env: GCC_VERSION=4.8 BUILD_TYPE=Release CPP=11 ASAN=Off LIBCXX=Off
       os: linux
       addons: *gcc48
-      
+
     # Test gcc-4.9: C++11, Build=Debug/Release, ASAN=Off
     - env: GCC_VERSION=4.9 BUILD_TYPE=Debug CPP=11 ASAN=Off LIBCXX=Off
       os: linux
@@ -45,6 +45,21 @@ matrix:
     - env: GCC_VERSION=4.9 BUILD_TYPE=Release CPP=11 ASAN=Off LIBCXX=Off
       os: linux
       addons: *gcc49
+
+    # Test gcc-8.0: C++11, Build=Debug/Release, ASAN=Off
+    - env: GCC_VERSION=8.0 BUILD_TYPE=Debug CPP=11 ASAN=On LIBCXX=Off
+      os: linux
+      addons: &gcc80
+        apt:
+          packages:
+            - g++-8.0
+            - valgrind
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: GCC_VERSION=8.0 BUILD_TYPE=Release CPP=11 ASAN=On LIBCXX=Off
+      os: linux
+      addons: *gcc80
 
 # Install dependencies
 before_install:
@@ -79,7 +94,7 @@ install:
   - cd example
   - if [ "$BUILD_TYPE" == "Release" ]; then make rebuild CXXFLAGS="${CXX_FLAGS} ${CXX_LINKER_FLAGS}" VERBOSE=1; export BIN=example; fi
   - if [ "$BUILD_TYPE" == "Debug" ]; then make rebuild debug CXXFLAGS="${CXX_FLAGS} ${CXX_LINKER_FLAGS}" VERBOSE=1; export BIN=example-debug; fi
-  
+
 
 script:
   - ./"${BIN}"
