@@ -46,20 +46,20 @@ matrix:
       os: linux
       addons: *gcc49
 
-    # Test gcc-8.0: C++11, Build=Debug/Release, ASAN=Off
-    - env: GCC_VERSION=8.0 BUILD_TYPE=Debug CPP=11 ASAN=On LIBCXX=Off
+    # Test gcc-7: C++11, Build=Debug/Release, ASAN=Off
+    - env: GCC_VERSION=7 BUILD_TYPE=Debug CPP=11 ASAN=On LIBCXX=Off
       os: linux
-      addons: &gcc80
+      addons: &gcc70
         apt:
           packages:
-            - g++-8.0
+            - g++-7
             - valgrind
           sources:
             - ubuntu-toolchain-r-test
 
-    - env: GCC_VERSION=8.0 BUILD_TYPE=Release CPP=11 ASAN=On LIBCXX=Off
+    - env: GCC_VERSION=7 BUILD_TYPE=Release CPP=11 ASAN=On LIBCXX=Off
       os: linux
-      addons: *gcc80
+      addons: *gcc70
 
 # Install dependencies
 before_install:
