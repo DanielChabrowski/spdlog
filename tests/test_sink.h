@@ -11,6 +11,7 @@
 #include <chrono>
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 namespace spdlog {
 namespace sinks {
@@ -45,8 +46,8 @@ protected:
     {
         flush_counter_++;
     }
-    size_t msg_counter_{0};
-    size_t flush_counter_{0};
+    std::atomic<size_t> msg_counter_{0};
+    std::atomic<size_t> flush_counter_{0};
     std::chrono::milliseconds delay_{std::chrono::milliseconds::zero()};
 };
 
