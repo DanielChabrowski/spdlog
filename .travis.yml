@@ -90,6 +90,7 @@ matrix:
       os: linux
       addons: *clang6
 
+  allow_failures:
       # Test clang-6.0: C++11, Build=Debug, TSAN=On
     - env: CLANG_VERSION=6.0 BUILD_TYPE=Debug CPP=11 TSAN=On
       os: linux
