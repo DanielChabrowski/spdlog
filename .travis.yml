@@ -46,7 +46,7 @@ matrix:
     - env: GCC_VERSION=4.8 BUILD_TYPE=Release CPP=11
       os: linux
       addons: *gcc48
-  
+
     - env: GCC_VERSION=7 BUILD_TYPE=Release CPP=11
       os: linux
       addons: *gcc7
@@ -60,7 +60,7 @@ matrix:
       os: linux
       addons: *clang35
 
-      # Test clang-6.0: C++11, Build=Debug, ASAN=On
+    # Test clang-6.0: C++11, Build=Debug/Release, ASAN=On
     - env: CLANG_VERSION=6.0 BUILD_TYPE=Debug CPP=11 ASAN=On TSAN=Off
       os: linux
       addons: *clang6
@@ -69,7 +69,7 @@ matrix:
       os: linux
       addons: *clang6
       
-      # Test clang-6.0: C++11, Build=Debug, TSAN=On
+    # Test clang-6.0: C++11, Build=Debug/Release, TSAN=On
     - env: CLANG_VERSION=6.0 BUILD_TYPE=Debug CPP=11 ASAN=Off TSAN=On
       os: linux
       addons: *clang6
@@ -78,14 +78,18 @@ matrix:
       os: linux
       addons: *clang6
 
-      # osx
+    # osx
     - env: BUILD_TYPE=Release CPP=11 ASAN=Off TSAN=Off
       os: osx
-    
 
+    # Coverage
+    - env: CLANG_VERSION=6.0 BUILD_TYPE=Release CPP=11 COVERAGE=On
+      os: linux
+      addons: *clang6
 
 
 before_script:
+  - if [ -n "COVERAGE" ]; then pip install --user cpp-coveralls; fi
   - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
   - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CXX="clang++" CC="clang"; fi
@@ -93,6 +97,7 @@ before_script:
   - which $CC
   - $CXX --version
   - cmake --version
+
 
 script:
   - cd ${TRAVIS_BUILD_DIR}
@@ -106,10 +111,14 @@ script:
       -DSPDLOG_BUILD_BENCH=OFF \
       -DSPDLOG_BUILD_TESTS=ON \
       -DSPDLOG_SANITIZE_ADDRESS=$ASAN \
-      -DSPDLOG_SANITIZE_THREAD=$TSAN
+      -DSPDLOG_SANITIZE_THREAD=$TSAN \
+      -DSPDLOG_COVERAGE=$COVERAGE
   - make VERBOSE=1 -j2
   - ctest -j2 --output-on-failure
 
+
+after_success:
+  - if [ -n "COVERAGE" ]; then coveralls --root . -E ".*CMakeFiles.*"; fi
 
 
 notifications:
