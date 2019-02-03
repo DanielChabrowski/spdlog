@@ -1,5 +1,7 @@
 project(spdlog-utests CXX)
 
+set(SPDLOG_COVERAGE OFF CACHE BOOL "Coverage")
+
 find_package(Threads REQUIRED)
 
 set(SPDLOG_UTESTS_SOURCES
@@ -22,6 +24,10 @@ set(SPDLOG_UTESTS_SOURCES
 add_executable(${PROJECT_NAME} ${SPDLOG_UTESTS_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
+
+if(SPDLOG_COVERAGE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE --coverage)
+endif()
 
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logs")
 
