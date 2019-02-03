@@ -26,6 +26,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
 
 if(SPDLOG_COVERAGE)
+    message(STATUS "Coverage enabled")
+    target_compile_options(${PROJECT_NAME} PRIVATE --coverage)
     target_link_libraries(${PROJECT_NAME} PRIVATE --coverage)
 endif()
 
