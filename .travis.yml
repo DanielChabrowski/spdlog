@@ -35,6 +35,15 @@ addons: &clang6
       - ubuntu-toolchain-r-test
       - llvm-toolchain-trusty-6.0
 
+addons: &coverage
+  apt:
+    packages:
+      - g++-4.8
+      - gcov
+      - lcov
+    sources:
+      - ubuntu-toolchain-r-test
+
 
 matrix:
   include:
@@ -85,9 +94,7 @@ matrix:
     # Coverage
     - env: GCC_VERSION=4.8 BUILD_TYPE=Debug CPP=11 COVERAGE=On
       os: linux
-      apt:
-        packages: lcov
-      addons: *gcc48
+      addons: *coverage
 
 
 before_script:
@@ -99,6 +106,7 @@ before_script:
   - $CXX --version
   - cmake --version
   - gcov --version
+  - lcov --version
 
 
 script:
@@ -121,7 +129,7 @@ script:
 
 after_success:
   - |
-    if [ -n "COVERAGE" ]; \
+    if [ -n "COVERAGE" ]; then \
       lcov --capture --directory . --output-file coverage.info \
       lcov --remove coverage.info '/usr/*' --output-file coverage.info \
       lcov --list coverage.info \
