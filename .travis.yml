@@ -106,7 +106,6 @@ before_script:
   - $CXX --version
   - cmake --version
   - gcov --version
-  - lcov --version
 
 
 script:
