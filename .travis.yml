@@ -39,7 +39,6 @@ addons: &coverage
   apt:
     packages:
       - g++-4.8
-      - gcov
       - lcov
     sources:
       - ubuntu-toolchain-r-test
