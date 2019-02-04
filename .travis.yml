@@ -83,9 +83,9 @@ matrix:
       os: osx
 
     # Coverage
-    - env: CLANG_VERSION=6.0 BUILD_TYPE=Release CPP=11 COVERAGE=On
+    - env: GCC_VERSION=7 BUILD_TYPE=Debug CPP=11 COVERAGE=On
       os: linux
-      addons: *clang6
+      addons: *gcc7
 
 
 before_script:
@@ -97,6 +97,7 @@ before_script:
   - which $CC
   - $CXX --version
   - cmake --version
+  - gcov --version
 
 
 script:
