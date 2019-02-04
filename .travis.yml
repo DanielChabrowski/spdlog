@@ -119,7 +119,7 @@ script:
 
 
 after_success:
-  - if [ -n "COVERAGE" ]; then coveralls --root . ; fi
+  - if [ -n "COVERAGE" ]; cd .. & then coveralls --include include -b build; fi
 
 
 notifications:
